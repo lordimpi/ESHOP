@@ -1,8 +1,11 @@
 module.exports = (app) => {
     var productosController = require("../controllers/producto.controlador");
-    //Método que obtiene un Producto
+    //Url que obtiene un Producto
     app.get("/productos/:id", productosController.obtener);
+    //Url que lista productos
     app.get("/productos",productosController.listar);
-    //app.post("/products",monedasController.actualizar);
-    //app.delete("/products/:id",monedasController.eliminar);
+    //Url para actualizar o crear productos
+    app.post("/productos",productosController.actualizar);
+    //Url para eliminar productos
+    app.delete("/productos/:id",productosController.eliminar);
 }

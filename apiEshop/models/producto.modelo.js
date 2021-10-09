@@ -47,4 +47,46 @@ Producto.listar = (resultado) => {
     });
 }
 
+//Actualizar Producto por id
+Producto.actualizar = (producto, resultado) => {
+    sql.query("CALL spActualizarProducto(?,?,?,?,?);",//Consulta sql
+        [producto.id, producto.producto, producto.sigla, producto.producto, producto.emisor],//Parametros 
+        (err, res) => {
+            //Verificar si hubo error ejecuntado la consulta
+            if (err) {
+                console.log("Error actualizando producto: ", err);
+                resultado(err, null);
+                return;
+            }
+            //La consulta no afecto registros
+            if (res.affectedRows == 0) {
+                resultado({ tipo: "No encontrado" }, null);
+                return;
+            }
+            //No se encontraron registros
+            console.log("producto actualizado: ", producto);
+            resultado(null, { producto });
+        });
+}
+
+//Eliminar producto por id
+producto.eliminar = (idproducto, resultado) => {
+    sql.query(`DELETE FROM Producto WHERE Id = ?;`, idproducto, (err, res) => {
+        //Verificar si hubo error ejecuntado la consulta
+        if (err) {
+            console.log("Error eliminando el producto: ", err);
+            resultado(err, null);
+            return;
+        }
+        //La consulta no afecto registros
+        if (res.affectedRows == 0) {
+            resultado({ tipo: "No encontrado" }, null);
+            return;
+        }
+        //No se encontraron registros
+        console.log("producto eliminado con id: ", idproducto);
+        resultado(null, res);
+    });
+}
+
 module.exports = Producto;
