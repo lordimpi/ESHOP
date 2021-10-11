@@ -9,7 +9,7 @@ var Producto = function(producto){
     this.valorUnitario = producto.ValorUnitario,
     this.idMarca = producto.IdMarca,
     this.imagen = producto.Imagen
-}
+};
 
 //Obtener product por id
 Producto.obtener = (idProduct, resultado) => {
@@ -22,7 +22,7 @@ Producto.obtener = (idProduct, resultado) => {
         }
         //La consulta devuelve resultado
         if (res.length) {
-            console.log("Producto encontrada: ", res[0]);
+            console.log("Producto encontrado: ", res[0]);
             resultado(null, res[0]);
             return;
         }

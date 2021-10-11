@@ -18,6 +18,7 @@ app.use(cors())
 
 
 require("./routes/producto.rutas")(app);
+require("./routes/usuario.rutas")(app);
 
 //Iniciar el servicio
 app.listen(puerto, () => {
