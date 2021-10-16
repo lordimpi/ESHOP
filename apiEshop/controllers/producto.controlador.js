@@ -39,7 +39,7 @@ exports.listar = (req, res) => {
     });
 }
 
-//Actualizar un Producto
+//Actualizar o Crear un Producto
 exports.actualizar = (req, res) => {
 
     if (!req.body) {

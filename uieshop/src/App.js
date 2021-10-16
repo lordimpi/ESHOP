@@ -1,10 +1,13 @@
-import './App.css';
+import { BrowserRouter } from "react-router-dom";
+import MenuPrincipal from "./components/MenuPrincipal";
+import Rutas from "./components/Rutas";
 
 function App() {
   return (
-    <div>
-      <h1>Se prendio esta mondaa</h1>
-    </div>
+    <BrowserRouter>
+      <MenuPrincipal />
+      <Rutas />
+    </BrowserRouter>
   );
 }
 

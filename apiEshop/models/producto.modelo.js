@@ -47,7 +47,7 @@ Producto.listar = (resultado) => {
     });
 }
 
-//Actualizar Producto por id
+//Actualizar o Crear Producto por id 
 Producto.actualizar = (producto, resultado) => {
     sql.query("CALL spActualizarProducto(?,?,?,?,?,?);",//Consulta sql
         [producto.id, producto.idMarca, producto.imagen, 
