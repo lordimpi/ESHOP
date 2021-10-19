@@ -49,7 +49,9 @@ const Productos = () => {
     //variable que almacenará la lista de Productos
     const [productos, setProductos] = useState([]);
     const [estadoListado, setEstadoListado] = useState(true);
-    const [modalInsertarModificar, setModalInsertarModificar] = useState(false);
+    const [modalInsertar, setModalInsertar] = useState(false);
+    const [modalModificar, setModalModificar] = useState(false);
+    const [modalEliminar, setModalEliminar] = useState(false);
     const [productoSeleccionado, setProductoSeleccionado] = useState({
         Id: -1,
         Nombre: "",
@@ -81,7 +83,8 @@ const Productos = () => {
             });
     }
     const guardar = (e) => {
-        setModalInsertarModificar(false);
+        setModalInsertar(false);
+        setModalModificar(false);
         console.log(productoSeleccionado)
         fetch("http://localhost:3011/productos",
             {
@@ -107,9 +110,31 @@ const Productos = () => {
             .catch(function (error) {
                 window.alert(`error agregando producto: [${error}]`);
             });
-        setEstadoListado(true);
+        if (productoSeleccionado.Id === -1) {
+            setEstadoListado(true);
+        }
     }
-
+    const eliminar = () => {
+        fetch(`http://localhost:3011/productos/${productoSeleccionado.Id}`,
+            {
+                method: 'delete',
+            }
+        )
+            .then((res) => {
+                if (res.status !== 200) {
+                    throw Error(res.statusText);
+                }
+                return res.json();
+            })
+            .then((json) => {
+                console.log(json.message);
+                setEstadoListado(true);
+            })
+            .catch(function (error) {
+                window.alert(`error eliminando producto [${error}]`);
+            });
+        openCloseModalEliminar();
+    }
     if (estadoListado) {
         listarProductos();
     }
@@ -120,10 +145,28 @@ const Productos = () => {
             ...prevState, [name]: value
         }));
     }
-    const openCloseModal = () => {
-        setModalInsertarModificar(!modalInsertarModificar);
+    const seleccionarProducto = (producto, caso) => {
+        setProductoSeleccionado(producto);
+        if (caso === "editar") {
+            openCloseModalModificar();
+        }
+        else {
+            openCloseModalEliminar();
+        }
+
     }
-    const modalInsertar = (
+    const openCloseModalInsertar = () => {
+        setModalInsertar(!modalInsertar);
+    }
+    const openCloseModalModificar = () => {
+        setModalModificar(!modalModificar);
+    }
+    const openCloseModalEliminar = () => {
+        setModalEliminar(!modalEliminar);
+    }
+
+    //Componentes a renderizar
+    const bodyInsertar = (
         <div className={classes.modal}>
             <form onSubmit={guardar}>
                 <h3>Crear nuevo producto</h3>
@@ -141,32 +184,43 @@ const Productos = () => {
                 <br /> <br />
                 <div align="right">
                     <Button color="primary" type="submit" >Crear</Button>
-                    <Button type="button" onClick={() => openCloseModal()}>Cancelar</Button>
+                    <Button type="button" onClick={() => openCloseModalInsertar()}>Cancelar</Button>
                 </div>
             </form>
         </div>
     );
-    const modalModificar = (
+    const bodyModificar = (
         <div className={classes.modal}>
-            <h3>Crear nuevo producto</h3>
-            <TextField className={classes.inputMaterial} label="Nombre"
-                name="Nombre" onChange={capturarDatos} />
-            <br />
-            <TextField className={classes.inputMaterial} label="Referencia"
-                name="Referencia" onChange={capturarDatos} />
-            <br />
-            <TextField className={classes.inputMaterial} label="Marca"
-                name="IdMarca" onChange={capturarDatos} />
-            <br />
-            <TextField className={classes.inputMaterial} label="Valor"
-                name="ValorUnitario" onChange={capturarDatos} />
-            <br /> <br />
-            <div align="right">
-                <Button color="primary">Crear</Button>
-                <Button onClick={() => openCloseModal()}>Cancelar</Button>
-            </div>
+            <form onSubmit={guardar}>
+                <h3>Editar producto</h3>
+                <TextField className={classes.inputMaterial} label="Nombre" name="Nombre" required
+                    onChange={capturarDatos} value={productoSeleccionado && productoSeleccionado.Nombre} />
+                <br />
+                <TextField className={classes.inputMaterial} label="Referencia" name="Referencia" required
+                    onChange={capturarDatos} value={productoSeleccionado && productoSeleccionado.Referencia} />
+                <br />
+                <TextField className={classes.inputMaterial} label="Marca" name="IdMarca" required type="number"
+                    onChange={capturarDatos} value={productoSeleccionado && productoSeleccionado.IdMarca} />
+                <br />
+                <TextField className={classes.inputMaterial} label="Valor" name="ValorUnitario" required type="number"
+                    onChange={capturarDatos} value={productoSeleccionado && productoSeleccionado.ValorUnitario} />
+                <br /> <br />
+                <div align="right">
+                    <Button color="primary" type="submit">Editar</Button>
+                    <Button onClick={() => openCloseModalModificar()}>Cancelar</Button>
+                </div>
+            </form>
         </div>
     );
+    const bodyEliminar = (
+        <div className={classes.modal}>
+            <p>Esta seguro que desea eliminar el producto <b>{productoSeleccionado && productoSeleccionado.Nombre}</b> ?</p>
+            <div align="right">
+                <Button color="secondary" onClick={() => eliminar()}>Si</Button>
+                <Button onClick={() => openCloseModalEliminar()}>No</Button>
+            </div>
+        </div>
+    )
 
     //Retorno del componente a renderizar en el menu principal de la pagina web
     return (
@@ -179,18 +233,18 @@ const Productos = () => {
                     {
                         icon: `edit`,
                         tooltip: "Editar producto",
-                        onClick: (event, rowData) => alert("Has precionado editar " + rowData.Nombre)
+                        onClick: (evetn, rowData) => seleccionarProducto(rowData, "editar")
                     },
                     {
                         icon: `delete`,
                         tooltip: "Eliminar producto",
-                        onClick: (event, rowData) => alert("Has precionado eliminar " + rowData.Nombre)
+                        onClick: (event, rowData) => seleccionarProducto(rowData, "eliminar")
                     },
                     {
                         icon: 'add',
                         tooltip: 'Nuevo Producto',
                         isFreeAction: true,
-                        onClick: () => openCloseModal()
+                        onClick: () => openCloseModalInsertar()
                     }
                 ]}
                 options={{
@@ -207,10 +261,22 @@ const Productos = () => {
                 }}
             />
             <Modal
-                open={modalInsertarModificar}
-                onClose={openCloseModal}
+                open={modalInsertar}
+                onClose={openCloseModalInsertar}
             >
-                {modalInsertar}
+                {bodyInsertar}
+            </Modal>
+            <Modal
+                open={modalModificar}
+                onClose={openCloseModalModificar}
+            >
+                {bodyModificar}
+            </Modal>
+            <Modal
+                open={modalEliminar}
+                onClose={openCloseModalEliminar}
+            >
+                {bodyEliminar}
             </Modal>
         </div>
     )
