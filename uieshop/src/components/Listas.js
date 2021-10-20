@@ -2,6 +2,7 @@ import React from 'react'
 import StorefrontIcon from '@material-ui/icons/Storefront';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import HomeIcon from '@material-ui/icons/Home';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import {
     List, ListItem, ListItemIcon,
     ListItemText, Divider
@@ -22,6 +23,12 @@ function Listas() {
                         <PeopleAltIcon />
                     </ListItemIcon>
                     <ListItemText primary="Usuarios" />
+                </ListItem>
+                <ListItem button component="a" href="/clientes">
+                    <ListItemIcon>
+                        <AssignmentIndIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Clientes" />
                 </ListItem>
                 <Divider />
                 <ListItem button component="a" href="/">
