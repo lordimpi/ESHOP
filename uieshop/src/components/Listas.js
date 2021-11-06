@@ -3,6 +3,7 @@ import StorefrontIcon from '@material-ui/icons/Storefront';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import HomeIcon from '@material-ui/icons/Home';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import {
     List, ListItem, ListItemIcon,
     ListItemText, Divider
@@ -29,6 +30,12 @@ function Listas() {
                         <AssignmentIndIcon />
                     </ListItemIcon>
                     <ListItemText primary="Clientes" />
+                </ListItem>
+                <ListItem button component="a" href="/ventas">
+                    <ListItemIcon>
+                        <AttachMoneyIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary="Ventas" />
                 </ListItem>
                 <Divider />
                 <ListItem button component="a" href="/">

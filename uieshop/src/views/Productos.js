@@ -112,9 +112,7 @@ const Productos = () => {
             });
         if (productoSeleccionado.Id === -1) {
             setEstadoListado(true);
-            return;
         }
-        setEstadoListado(true);
     }
     const eliminar = () => {
         fetch(`http://localhost:3011/productos/${productoSeleccionado.Id}`,

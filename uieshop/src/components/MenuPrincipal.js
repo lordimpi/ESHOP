@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     makeStyles, Box, AppBar, Button,
     Toolbar, IconButton, Typography, Drawer
 } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import Listas from "./Listas"
-
+import Grid from '@material-ui/core/Grid';
+import { useAuth0 } from "@auth0/auth0-react";
 const obtenerEstilos = makeStyles((theme) => ({
     root: {
         display: "flex",
@@ -22,6 +23,32 @@ const obtenerEstilos = makeStyles((theme) => ({
 }));
 
 const MenuPrincipal = () => {
+
+    const { loginWithRedirect, isAuthenticated, user, logout, getAccessTokenSilently } = useAuth0(); const [textButton, setTextButton] = useState("Login");
+    const [Name, setName] = useState('')
+    useEffect(() => {
+        if (isAuthenticated) {
+            setTextButton('Logout')
+            setName(user.name)
+        } else {
+            setTextButton('Login')
+            setName('')
+
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAuthenticated])
+
+    useEffect(() => {
+        const getToken = async () => {
+            const accessToken = await getAccessTokenSilently();
+            localStorage.setItem('token', accessToken)
+        }
+        if (isAuthenticated) {
+            getToken();
+        }
+
+    }, [isAuthenticated, getAccessTokenSilently])
+
     const estilos = obtenerEstilos();
 
     //manejo del estado del menú
@@ -57,7 +84,41 @@ const MenuPrincipal = () => {
                 <Typography variant="h6" className={estilos.title} >
                     Eshop
                 </Typography>
-                <Button color="inherit">Login</Button>
+
+                {
+                    isAuthenticated ?
+                        <div>
+
+                            <Grid
+                                container
+                                direction="row"
+                                justifyContent="flex-end"
+                                alignItems="center"
+                            >
+                                <Grid Item>
+                                    <Button
+                                        className={estilos.title}
+                                        color="inherit"
+                                    >
+                                        {Name}
+                                    </Button>
+                                </Grid>
+                                <Grid Item>
+                                    <Button
+                                        onClick={() => logout({ returnTo: window.location.origin })}
+                                        className={estilos.title}
+                                        color="inherit">
+                                        {textButton}
+                                    </Button>
+                                </Grid>
+                            </Grid>
+
+
+                        </div> :
+                        <Button
+                            onClick={() => loginWithRedirect()}
+                            color="inherit">{textButton}</Button>
+                }
             </Toolbar>
             <Drawer
                 anchor="left"
