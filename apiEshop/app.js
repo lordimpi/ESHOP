@@ -16,9 +16,9 @@ app.use(bodyParser.json());
 const cors = require('cors')
 app.use(cors())
 
-
 require("./routes/producto.rutas")(app);
 require("./routes/usuario.rutas")(app);
+require("./routes/venta.rutas")(app);
 
 //Iniciar el servicio
 app.listen(puerto, () => {

@@ -30,11 +30,10 @@ const MenuPrincipal = () => {
         if (isAuthenticated) {
             setTextButton('Logout')
             setName(user.name)
-        } else {
-            setTextButton('Login')
-            setName('')
-
+            return;
         }
+        setTextButton('Login')
+        setName('')
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated])
 

@@ -11,7 +11,7 @@ exports.validarAcceso = (req, res) => {
     Usuario.validarAcceso(req.body.Usuario, req.body.Clave, (err, data) => {
         //Verificar si hubo error
         if (err) {
-            if (err.tipo == "No encontrado") {
+            if (err.tipo == "No encontrado" || err.tipo == "Credenciales no válidas") {
                 res.status(404).send({ message: 'Credenciales no válidas' });
             }
             else {
@@ -20,7 +20,28 @@ exports.validarAcceso = (req, res) => {
         }
         else {
             //Se devuelve los registros obtenidos
-            res.send(data[0]);
+            res.send(data);
+        }
+    });
+}
+
+//Metodo web para cambiar la clave de un usuario
+exports.cambiarClave = (req, res) => {
+    //Validar que la solicitud tenga datos
+    if (!req.body) {
+        res.status(400).send({ message: 'Debe incluir en el mensaje el usuario y la clave' });
+    }
+    Usuario.cambiarClave(req.body.Usuario, req.body.Clave, (err, data) => {
+        //Verificar si hubo error
+        if (err) {
+            if (err.tipo = "No encontrado") {
+                res.status(400).send({ message: 'Usuario no existente' });
+            } else {
+                res.status(500).send({ message: 'Error actualizando la clave usuario' });
+            }
+        } else {
+            //Se devuelve los registros obtenidos
+            res.send(data);
         }
     });
 }
